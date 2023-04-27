@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_explorer/blocs/movies_cubit.dart';
 import 'package:movie_explorer/blocs/movies_state.dart';
+import 'package:movie_explorer/blocs/user_cubit.dart';
 import 'package:movie_explorer/models/movie.dart';
 import 'package:movie_explorer/ui/widgets/movie_card.dart';
 
@@ -20,31 +21,36 @@ class HomePage extends StatelessWidget {
         child: SingleChildScrollView(
           child: RefreshIndicator(
             onRefresh: () => context.read<MoviesCubit>().loadMovies(),
-            child: BlocBuilder<MoviesCubit, MoviesState>(builder: (context, state) {
+            child: BlocBuilder<MoviesCubit, MoviesState>(
+                builder: (context, state) {
               switch (state.dataState) {
                 case DataState.loading:
                   return const Center(child: CircularProgressIndicator());
                 case DataState.loaded:
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Populaires',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 24),
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600, fontSize: 24),
                         ),
                         SizedBox(
                           height: 160,
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemCount: state.popular.length,
-                              separatorBuilder: (context, index) => const SizedBox(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
                                     width: 16,
                                   ),
                               itemBuilder: (context, index) {
                                 final Movie movie = state.popular[index];
-                                return SizedBox(width: 280, child: MovieCard(movie: movie));
+                                return SizedBox(
+                                    width: 280, child: MovieCard(movie: movie));
                               }),
                         ),
                         const SizedBox(
@@ -52,27 +58,36 @@ class HomePage extends StatelessWidget {
                         ),
                         Text(
                           'Les mieux notés',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 24),
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600, fontSize: 24),
                         ),
                         SizedBox(
                           height: 160,
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               itemCount: state.topRated.length,
-                              separatorBuilder: (context, index) => const SizedBox(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
                                     width: 16,
                                   ),
                               itemBuilder: (context, index) {
                                 final Movie movie = state.topRated[index];
-                                return SizedBox(width: 280, child: MovieCard(movie: movie));
+                                return SizedBox(
+                                    width: 280, child: MovieCard(movie: movie));
                               }),
                         ),
+                        ElevatedButton(
+                            child: Text('Se déconnecter'),
+                            onPressed: () async {
+                              context.read<UserCubit>().disconnect();
+                            }),
                       ],
                     ),
                   );
                 case DataState.error:
                   return const Center(
-                    child: Text('Une erreur est survenue, veuillez recommencer'),
+                    child:
+                        Text('Une erreur est survenue, veuillez recommencer'),
                   );
               }
             }),
