@@ -25,7 +25,9 @@ class HomePage extends StatelessWidget {
                 builder: (context, state) {
               switch (state.dataState) {
                 case DataState.loading:
-                  return const Center(child: CircularProgressIndicator());
+                  return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(child: CircularProgressIndicator()));
                 case DataState.loaded:
                   return Padding(
                     padding: const EdgeInsets.symmetric(
